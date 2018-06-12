@@ -33,12 +33,23 @@ public class EiFilesApplication implements CommandLineRunner {
 
     @RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
     public @ResponseBody
-    String uploadImage2(@RequestParam("imageValue") String imageValue,
-                        @RequestParam("imageName") String imageName,
-                        HttpServletRequest request) {
+    String uploadImage(@RequestParam("imageValue") String imageValue,
+                       @RequestParam("imageName") String imageName,
+                       HttpServletRequest request) {
         try {
             s3Services.uploadFile(imageName, imageValue);
             return "success ";
+        } catch (Exception e) {
+            return "error = " + e;
+        }
+
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public @ResponseBody
+    String index() {
+        try {
+            return "Welcome to Einstein Files";
         } catch (Exception e) {
             return "error = " + e;
         }
