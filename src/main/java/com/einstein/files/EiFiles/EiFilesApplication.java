@@ -5,7 +5,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,7 +34,7 @@ public class EiFilesApplication implements CommandLineRunner {
     @RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
     public @ResponseBody
     String uploadImage(@RequestParam("imageName") String imageName,
-                       @RequestBody String imageValue,
+                       @RequestParam("imageValue") String imageValue,
                        HttpServletRequest request) {
         try {
             s3Services.uploadFile(imageName, imageValue);
@@ -77,6 +80,6 @@ public class EiFilesApplication implements CommandLineRunner {
 
 
 //download File
-        s3Services.downloadFile("score.jpg");
+//        s3Services.downloadFile("score.jpg");
     }
 }
