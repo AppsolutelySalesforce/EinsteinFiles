@@ -42,7 +42,19 @@ public class EiFilesApplication implements CommandLineRunner {
         } catch (Exception e) {
             return "error = " + e;
         }
+    }
 
+    @RequestMapping(value = "/uploadImage", method = RequestMethod.POST)
+    public @ResponseBody
+    String uploadImage(
+            @RequestParam("imageValue") String imageValue,
+            HttpServletRequest request) {
+        try {
+            s3Services.uploadFile("1.jpg", imageValue);
+            return "success ";
+        } catch (Exception e) {
+            return "error = " + e;
+        }
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
