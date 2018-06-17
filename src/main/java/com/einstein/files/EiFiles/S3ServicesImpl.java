@@ -35,15 +35,16 @@ public class S3ServicesImpl implements S3Services {
     }
 
     @Override
-    public void downloadFile(String keyName) {
+    public S3Object downloadFile(String keyName) {
 
         try {
 
             System.out.println("Downloading an object");
             S3Object s3object = s3client.getObject(new GetObjectRequest(bucketName, keyName));
             System.out.println("Content-Type: " + s3object.getObjectMetadata().getContentType());
-            Utility.displayText(s3object.getObjectContent());
+//            Utility.displayText(s3object.getObjectContent());
             logger.info("===================== Import File - Done! =====================");
+            return s3object;
 
         } catch (AmazonServiceException ase) {
             logger.info("Caught an AmazonServiceException from GET requests, rejected reasons:");
@@ -55,13 +56,14 @@ public class S3ServicesImpl implements S3Services {
         } catch (AmazonClientException ace) {
             logger.info("Caught an AmazonClientException: ");
             logger.info("Error Message: " + ace.getMessage());
-        } catch (IOException ioe) {
-            logger.info("IOE Error Message: " + ioe.getMessage());
+//        } catch (IOException ioe) {
+//            logger.info("IOE Error Message: " + ioe.getMessage());
         }
+        return null;
     }
 
     @Override
-    public void uploadFile(String fileName, String uploadFileBase64) {
+    public void uploadFileBase64(String fileName, String uploadFileBase64) {
 
         try {
 
@@ -84,12 +86,30 @@ public class S3ServicesImpl implements S3Services {
             logger.info("===================== Upload File - Done! =====================");
 
         } catch (AmazonServiceException ase) {
-            logger.info("Caught an AmazonServiceException from PUT requests, rejected reasons:");
-            logger.info("Error Message:    " + ase.getMessage());
-            logger.info("HTTP Status Code: " + ase.getStatusCode());
-            logger.info("AWS Error Code:   " + ase.getErrorCode());
-            logger.info("Error Type:       " + ase.getErrorType());
-            logger.info("Request ID:       " + ase.getRequestId());
+            logAmazonError(ase);
+        } catch (AmazonClientException ace) {
+            logger.info("Caught an AmazonClientException: ");
+            logger.info("Error Message: " + ace.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void uploadFile(String fileName, byte[] bites) {
+
+        try {
+
+            byte[] imageBytes = bites;
+            File file = new File(fileName);
+            file.createNewFile();
+            new FileOutputStream(file, false).write(imageBytes);
+
+            s3client.putObject(new PutObjectRequest(bucketName, fileName, file));
+            logger.info("===================== Upload File - Done! =====================");
+
+        } catch (AmazonServiceException ase) {
+            logAmazonError(ase);
         } catch (AmazonClientException ace) {
             logger.info("Caught an AmazonClientException: ");
             logger.info("Error Message: " + ace.getMessage());
@@ -109,6 +129,15 @@ public class S3ServicesImpl implements S3Services {
         URL url = s3client.generatePresignedUrl(generatePresignedUrlRequest);
         System.out.println(">>> URL > " + url);
         return url.toString();
+    }
+
+    private void logAmazonError(AmazonServiceException ase) {
+        logger.info("Caught an AmazonServiceException from PUT requests, rejected reasons:");
+        logger.info("Error Message:    " + ase.getMessage());
+        logger.info("HTTP Status Code: " + ase.getStatusCode());
+        logger.info("AWS Error Code:   " + ase.getErrorCode());
+        logger.info("Error Type:       " + ase.getErrorType());
+        logger.info("Request ID:       " + ase.getRequestId());
     }
 
 }
