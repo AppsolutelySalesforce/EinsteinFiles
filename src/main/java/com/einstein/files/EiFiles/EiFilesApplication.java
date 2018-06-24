@@ -60,20 +60,20 @@ public class EiFilesApplication implements CommandLineRunner {
     }
 
     /**
-     * Get list of file names which should be added to the Zip with specified annotation name
+     * Get list of file names which should be added to the Zip with specified Zip file name
      * And return downloadable url for the Zip
      * @param fileNames File names
-     * @param annotationName name of the result zip file
+     * @param zipName name of the result zip file
      * @param request
      * @return downloadable URL for generated Zip
      */
     @RequestMapping(value = "/getzipurl", method = RequestMethod.POST)
     public @ResponseBody
-    String getzipurl(@RequestParam("fileNames") String[] fileNames,
-                     @RequestParam("annotationName") String annotationName,
+    String getZipUrl(@RequestParam("fileNames") String[] fileNames,
+                     @RequestParam("zipName") String zipName,
                      HttpServletRequest request) {
         try {
-            return assembleZip(fileNames, annotationName);
+            return assembleZip(fileNames, zipName);
         } catch (Exception e) {
             return "error = " + e;
         }

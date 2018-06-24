@@ -66,17 +66,6 @@ public class S3ServicesImpl implements S3Services {
     public void uploadFileBase64(String fileName, String uploadFileBase64) {
 
         try {
-
-            //Test with local File
-   /*         File file2 = new File("/Users/anastasiiarudyk/Desktop/1.jpg");
-            FileInputStream fileInputStreamReader = new FileInputStream(file2);
-            byte[] bytes = new byte[(int) file2.length()];
-            fileInputStreamReader.read(bytes);
-
-            String base63OfFile2 = new String(Base64.encodeBase64(bytes), "UTF-8");
-            System.out.println(">>>>> " + base63OfFile2);*/
-
-
             byte[] imageBytes = Base64.decodeBase64(uploadFileBase64);
             File file = new File(fileName);
             file.createNewFile();
